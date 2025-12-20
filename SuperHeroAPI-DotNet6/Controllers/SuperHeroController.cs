@@ -38,11 +38,24 @@ namespace SuperHeroAPI_DotNet6.Controllers
             return Ok(await _superheroService.GetAllAsync());
         }
 
-        /*[HttpGet("new-response")]
-        public async Task<ActionResult<ApiResponse<List<SuperHeroDTO>>>> GetAllSuperHero()
+        [HttpGet("new-response-dto")]
+        public async Task<ActionResult<ApiResponse<List<SuperHeroDTO>>>> GetAllSuperHeroDTO()
         {
-            return null;
-        }*/
+            List<SuperHeroDTO> superHeroes = await _superheroService.GetAllHeroesAsync();
+
+            /*return Ok(new ApiResponse<List<SuperHero>>(
+                message: "All superheroes successfully fetched",    // this we need to initialize the object since it's not spring without the annotation, and ...NOTE.. the the key word (..new..) it's object
+                payload: superHeroes
+            ));*/
+
+            var apiResponse = new ApiResponse<List<SuperHeroDTO>>
+                (
+                    message: "All superheroes successfully fetched",
+                    payload: superHeroes
+                );
+
+            return Ok(apiResponse);
+        }
 
         [HttpGet("new-response")]
         public async Task<ActionResult<ApiResponse<List<SuperHero>>>> GetAllSuperHero()

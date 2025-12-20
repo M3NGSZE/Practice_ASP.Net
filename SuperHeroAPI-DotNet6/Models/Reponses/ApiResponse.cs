@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using SuperHeroAPI_DotNet6.Models.Dtos;
+using System.Net;
 
 namespace SuperHeroAPI_DotNet6.Models.Reponse
 {

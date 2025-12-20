@@ -7,6 +7,6 @@ namespace SuperHeroAPI_DotNet6.Services.Interfaces
     {
         Task<List<SuperHero>> GetAllAsync();
 
-        //Task<List<SuperHeroDTO>> GetAllHeroesAsync();
+        Task<List<SuperHeroDTO>> GetAllHeroesAsync();
     }
 }
