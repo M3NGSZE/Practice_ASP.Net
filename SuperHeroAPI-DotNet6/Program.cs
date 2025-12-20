@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using SuperHeroAPI_DotNet6.Data;
 using SuperHeroAPI_DotNet6.Repositories.Implementations;
 using SuperHeroAPI_DotNet6.Repositories.Interfaces;
@@ -23,6 +24,9 @@ builder.Services.AddDbContext<DataContext>(options =>
 // DI
 builder.Services.AddScoped<ISuperHeroRepository, SuperHeroRepository>();
 builder.Services.AddScoped<ISuperheroService, SuperheroService>();
+
+// AutoMapper
+builder.Services.AddAutoMapper(typeof(Program));
 
 var app = builder.Build();
 

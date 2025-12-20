@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using SuperHeroAPI_DotNet6.Models.Dtos;
 using SuperHeroAPI_DotNet6.Models.Entities;
+using SuperHeroAPI_DotNet6.Models.Reponse;
 using SuperHeroAPI_DotNet6.Services.Interfaces;
 
 namespace SuperHeroAPI_DotNet6.Controllers
@@ -34,6 +36,26 @@ namespace SuperHeroAPI_DotNet6.Controllers
             return Ok(heroes);*/
 
             return Ok(await _superheroService.GetAllAsync());
+        }
+
+        /*[HttpGet("new-response")]
+        public async Task<ActionResult<ApiResponse<List<SuperHeroDTO>>>> GetAllSuperHero()
+        {
+            return null;
+        }*/
+
+        [HttpGet("new-response")]
+        public async Task<ActionResult<ApiResponse<List<SuperHero>>>> GetAllSuperHero()
+        {
+            List<SuperHero> superHeroes = await _superheroService.GetAllAsync();
+            var apiResponse = new ApiResponse<List<SuperHero>>
+                (
+                    message: "All superheroes successfully fetched",
+                    statusCode: 200,
+                    payload: superHeroes
+                );
+
+            return Ok(apiResponse);
         }
     }
 }
