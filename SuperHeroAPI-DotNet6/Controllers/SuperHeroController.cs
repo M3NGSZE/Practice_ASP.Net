@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using SuperHeroAPI_DotNet6.Models.Dtos;
 using SuperHeroAPI_DotNet6.Models.Entities;
 using SuperHeroAPI_DotNet6.Models.Reponse;
+using SuperHeroAPI_DotNet6.Models.Requests;
 using SuperHeroAPI_DotNet6.Services.Interfaces;
 
 namespace SuperHeroAPI_DotNet6.Controllers
@@ -85,9 +86,20 @@ namespace SuperHeroAPI_DotNet6.Controllers
             // redude write short code
             return Ok(new ApiResponse<SuperHeroDTO>
                 (
-                    message: "All superheroes successfully fetched",
+                    message: "A Superheroe successfully fetched",
                     payload: await _superheroService.GetHeroByIdAsync(id)
                 ));
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<SuperHeroDTO>> createSuperHero(SuperHeroRequest request)
+        {
+            return Ok(new ApiResponse<SuperHeroDTO>
+                (
+                    message: "New superheroe successfully created",
+                    statusCode: 201,
+                    payload: await _superheroService.CreateHeroAsync(request)
+                )); ;
         }
     }
 }

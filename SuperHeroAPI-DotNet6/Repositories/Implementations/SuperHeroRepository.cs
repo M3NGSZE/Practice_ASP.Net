@@ -14,6 +14,13 @@ namespace SuperHeroAPI_DotNet6.Repositories.Implementations
             _dataContext = dataContext;
         }
 
+        public async Task<SuperHero> CreateAsync(SuperHero entity)
+        {
+            _dataContext.SuperHeroes.Add(entity);
+            await _dataContext.SaveChangesAsync();
+            return entity;
+        }
+
         public async Task<List<SuperHero>> GetAllAsync()
         {
             return await _dataContext.SuperHeroes.ToListAsync();

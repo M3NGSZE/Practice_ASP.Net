@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using SuperHeroAPI_DotNet6.Models.Dtos;
 using SuperHeroAPI_DotNet6.Models.Entities;
+using SuperHeroAPI_DotNet6.Models.Requests;
 using SuperHeroAPI_DotNet6.Repositories.Interfaces;
 using SuperHeroAPI_DotNet6.Services.Interfaces;
 
@@ -15,6 +16,13 @@ namespace SuperHeroAPI_DotNet6.Services.Implementations
         {
             _superHeroRepository = superHeroRepository;
             _mapper = mapper;
+        }
+
+        public async Task<SuperHeroDTO> CreateHeroAsync(SuperHeroRequest superHeroRequest)
+        {
+            SuperHero superHero = _mapper.Map<SuperHero>(superHeroRequest);
+            var savedUser = await _superHeroRepository.CreateAsync(superHero);
+            return _mapper.Map<SuperHeroDTO>(savedUser); ;
         }
 
         public async Task<List<SuperHero>> GetAllAsync()
