@@ -81,6 +81,8 @@ namespace SuperHeroAPI_DotNet6.Controllers
                     payload: await _superheroService.GetHeroByIdAsync(id)
                 );*/
 
+
+            // redude write short code
             return Ok(new ApiResponse<SuperHeroDTO>
                 (
                     message: "All superheroes successfully fetched",

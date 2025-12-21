@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using SuperHeroAPI_DotNet6.Data;
+using SuperHeroAPI_DotNet6.Middlewares;
 using SuperHeroAPI_DotNet6.Repositories.Implementations;
 using SuperHeroAPI_DotNet6.Repositories.Interfaces;
 using SuperHeroAPI_DotNet6.Services.Implementations;
@@ -29,6 +30,9 @@ builder.Services.AddScoped<ISuperheroService, SuperheroService>();
 builder.Services.AddAutoMapper(typeof(Program));
 
 var app = builder.Build();
+
+// Middleware
+app.UseMiddleware<ExceptionMiddleware>();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
