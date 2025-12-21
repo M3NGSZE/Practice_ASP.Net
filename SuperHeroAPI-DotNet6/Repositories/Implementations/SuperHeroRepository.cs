@@ -18,5 +18,10 @@ namespace SuperHeroAPI_DotNet6.Repositories.Implementations
         {
             return await _dataContext.SuperHeroes.ToListAsync();
         }
+
+        public async Task<SuperHero?> GetAsync(int id)
+        {
+            return await _dataContext.SuperHeroes.FindAsync(id);
+        }
     }
 }

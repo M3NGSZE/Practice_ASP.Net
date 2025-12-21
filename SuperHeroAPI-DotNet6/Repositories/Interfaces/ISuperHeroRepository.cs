@@ -5,5 +5,7 @@ namespace SuperHeroAPI_DotNet6.Repositories.Interfaces
     public interface ISuperHeroRepository
     {
         Task<List<SuperHero>> GetAllAsync();
+
+        Task<SuperHero> GetAsync(int id);
     }
 }

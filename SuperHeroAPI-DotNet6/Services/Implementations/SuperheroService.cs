@@ -37,5 +37,12 @@ namespace SuperHeroAPI_DotNet6.Services.Implementations
                 .Select(_mapper.Map<SuperHeroDTO>)
                 .ToList();
         }
+
+        public async Task<SuperHeroDTO> GetHeroByIdAsync(int id)
+        {
+            //SuperHero superHero = await _superHeroRepository.GetAsync(id);
+
+            return _mapper.Map<SuperHeroDTO>(await _superHeroRepository.GetAsync(id));
+        }
     }
 }

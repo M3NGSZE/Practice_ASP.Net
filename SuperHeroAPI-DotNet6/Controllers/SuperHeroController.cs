@@ -70,5 +70,22 @@ namespace SuperHeroAPI_DotNet6.Controllers
 
             return Ok(apiResponse);
         }
+
+        [HttpGet("{id:int}")]
+        public async Task<ActionResult<SuperHeroDTO>> GetAsyncById(int id)
+        {
+
+/*            var apiResponse = new ApiResponse<SuperHeroDTO>
+                (
+                    message: "All superheroes successfully fetched",
+                    payload: await _superheroService.GetHeroByIdAsync(id)
+                );*/
+
+            return Ok(new ApiResponse<SuperHeroDTO>
+                (
+                    message: "All superheroes successfully fetched",
+                    payload: await _superheroService.GetHeroByIdAsync(id)
+                ));
+        }
     }
 }
