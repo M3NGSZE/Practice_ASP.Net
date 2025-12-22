@@ -32,7 +32,7 @@ builder.Services.AddAutoMapper(typeof(Program));
 var app = builder.Build();
 
 // Middleware
-app.UseMiddleware<ExceptionMiddleware>();
+app.UseMiddleware<GlobalExceptionHandlerMiddleware>();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

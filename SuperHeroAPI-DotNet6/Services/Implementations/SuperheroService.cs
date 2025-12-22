@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using SuperHeroAPI_DotNet6.Middlewares;
 using SuperHeroAPI_DotNet6.Models.Dtos;
 using SuperHeroAPI_DotNet6.Models.Entities;
 using SuperHeroAPI_DotNet6.Models.Requests;
@@ -48,9 +49,15 @@ namespace SuperHeroAPI_DotNet6.Services.Implementations
 
         public async Task<SuperHeroDTO> GetHeroByIdAsync(int id)
         {
-            //SuperHero superHero = await _superHeroRepository.GetAsync(id);
+            SuperHero superHero = await _superHeroRepository.GetAsync(id);
 
-            return _mapper.Map<SuperHeroDTO>(await _superHeroRepository.GetAsync(id));
+            if(superHero == null)
+            {
+                throw new NotFoundException("Superhero not found");
+            }
+
+            
+            return _mapper.Map<SuperHeroDTO>(superHero);
         }
     }
 }

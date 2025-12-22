@@ -9,6 +9,7 @@ namespace SuperHeroAPI_DotNet6.Mappings
     {
         public AutoMapperProfile() 
         {
+            // first param is value that pass in and second param is value that map to ..(Ex).. SuperHero to SuperHeroDTO
             CreateMap<SuperHero, SuperHeroDTO>();
             CreateMap<SuperHeroRequest, SuperHero>();
         }
