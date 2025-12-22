@@ -15,5 +15,7 @@ namespace SuperHeroAPI_DotNet6.Services.Interfaces
         Task<SuperHeroDTO> CreateHeroAsync(SuperHeroRequest superHeroRequest);
 
         Task<SuperHeroDTO> UpdateHeroAsync(int id, SuperHeroRequest superHeroRequest);
+
+        Task DeleteHeroByIdAsync(int id);
     }
 }

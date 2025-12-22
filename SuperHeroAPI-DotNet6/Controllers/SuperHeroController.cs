@@ -86,7 +86,7 @@ namespace SuperHeroAPI_DotNet6.Controllers
             // redude write short code
             return Ok(new ApiResponse<SuperHeroDTO>
                 (
-                    message: "A Superheroe successfully fetched",
+                    message: "A Superhero successfully fetched",
                     payload: await _superheroService.GetHeroByIdAsync(id)
                 ));
         }
@@ -96,7 +96,7 @@ namespace SuperHeroAPI_DotNet6.Controllers
         {
             return Ok(new ApiResponse<SuperHeroDTO>
                 (
-                    message: "New superheroe successfully created",
+                    message: "A new superhero successfully created",
                     statusCode: 201,
                     payload: await _superheroService.CreateHeroAsync(request)
                 )); 
@@ -107,10 +107,21 @@ namespace SuperHeroAPI_DotNet6.Controllers
         {
             return Ok(new ApiResponse<SuperHeroDTO>
                 (
-                    message: "A superheroe successfully updated",
+                    message: "A superhero successfully updated",
                     statusCode: 201,
                     payload: await _superheroService.UpdateHeroAsync(id, request)
                 )); 
+        }
+
+        [HttpDelete("{id:int}")]
+        public async Task<ActionResult<SuperHeroDTO>> DeleteSuperHero(int id)
+        {
+            await _superheroService.DeleteHeroByIdAsync(id);
+            return Ok(new ApiResponse<SuperHeroDTO>
+                (
+                    message: "A superhero successfully deleted",
+                    statusCode: 201
+                )) ;
         }
     }
 }

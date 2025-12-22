@@ -11,5 +11,7 @@ namespace SuperHeroAPI_DotNet6.Repositories.Interfaces
         Task<SuperHero> CreateAsync(SuperHero entity);
 
         Task UpdateAsync();
+
+        Task DeleteAsync(SuperHero entity);
     }
 }

@@ -26,6 +26,17 @@ namespace SuperHeroAPI_DotNet6.Services.Implementations
             return _mapper.Map<SuperHeroDTO>(savedUser); ;
         }
 
+        public async Task DeleteHeroByIdAsync(int id)
+        {
+            var sup = await GetHeroEntity(id);
+
+            // entity is tracked
+            await _superHeroRepository.DeleteAsync(sup);
+
+            await _superHeroRepository.UpdateAsync();
+
+        }
+
         public async Task<List<SuperHero>> GetAllAsync()
         {
             return await _superHeroRepository.GetAllAsync();
@@ -82,6 +93,7 @@ namespace SuperHeroAPI_DotNet6.Services.Implementations
             if (sup == null)
                 throw new NotFoundException("Superhero not found");*/
 
+            // found new solution (first create method that return entity then have two seperate method one map to dto and one keep origin entity // we can use it later)
             var sup = await GetHeroEntity(id);
 
             sup.Name = superHeroRequest.Name;

@@ -21,6 +21,12 @@ namespace SuperHeroAPI_DotNet6.Repositories.Implementations
             return entity;
         }
 
+        public Task DeleteAsync(SuperHero entity)
+        {
+            _dataContext?.SuperHeroes.Remove(entity); // mark as Deleted
+            return Task.CompletedTask;
+        }
+
         public async Task<List<SuperHero>> GetAllAsync()
         {
             return await _dataContext.SuperHeroes.ToListAsync();
