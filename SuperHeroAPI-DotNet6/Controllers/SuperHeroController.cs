@@ -99,7 +99,18 @@ namespace SuperHeroAPI_DotNet6.Controllers
                     message: "New superheroe successfully created",
                     statusCode: 201,
                     payload: await _superheroService.CreateHeroAsync(request)
-                )); ;
+                )); 
+        }
+
+        [HttpPut("{id:int}")]
+        public async Task<ActionResult<SuperHeroDTO>> UpdateSuperHero(int id, SuperHeroRequest request)
+        {
+            return Ok(new ApiResponse<SuperHeroDTO>
+                (
+                    message: "A superheroe successfully updated",
+                    statusCode: 201,
+                    payload: await _superheroService.UpdateHeroAsync(id, request)
+                )); 
         }
     }
 }

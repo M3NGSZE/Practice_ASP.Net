@@ -11,7 +11,10 @@ namespace SuperHeroAPI_DotNet6.Mappings
         {
             // first param is value that pass in and second param is value that map to ..(Ex).. SuperHero to SuperHeroDTO
             CreateMap<SuperHero, SuperHeroDTO>();
+
             CreateMap<SuperHeroRequest, SuperHero>();
+
+            CreateMap<SuperHeroDTO, SuperHero>();
         }
     }
 }

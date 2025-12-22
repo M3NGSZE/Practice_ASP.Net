@@ -49,15 +49,49 @@ namespace SuperHeroAPI_DotNet6.Services.Implementations
 
         public async Task<SuperHeroDTO> GetHeroByIdAsync(int id)
         {
-            SuperHero superHero = await _superHeroRepository.GetAsync(id);
+            /*var superHero = await _superHeroRepository.GetAsync(id);
 
             if(superHero == null)
-            {
-                throw new NotFoundException("Superhero not found");
-            }
+                throw new NotFoundException("Superhero not found");*/
 
-            
+            var superHero = await GetHeroEntity(id);
+
             return _mapper.Map<SuperHeroDTO>(superHero);
+        }
+
+        public async Task<SuperHero> GetHeroEntity(int id)
+        {
+            var superHero = await _superHeroRepository.GetAsync(id);
+
+            if (superHero == null)
+                throw new NotFoundException("Superhero not found");
+
+            return superHero;
+        }
+
+        public async Task<SuperHeroDTO> UpdateHeroAsync(int id, SuperHeroRequest superHeroRequest)
+        {
+            /*var superHero = await GetHeroByIdAsync(id);
+
+            SuperHero sup = _mapper.Map<SuperHero>(superHero);
+
+            Console.WriteLine(sup);*/
+
+            /*var sup = await _superHeroRepository.GetAsync(id);
+
+            if (sup == null)
+                throw new NotFoundException("Superhero not found");*/
+
+            var sup = await GetHeroEntity(id);
+
+            sup.Name = superHeroRequest.Name;
+            sup.FirstName = superHeroRequest.FirstName;
+            sup.LastName = superHeroRequest.LastName;
+            sup.Place = superHeroRequest.Place;
+
+            await _superHeroRepository.UpdateAsync();
+
+            return _mapper.Map<SuperHeroDTO>(sup);
         }
     }
 }

@@ -30,5 +30,10 @@ namespace SuperHeroAPI_DotNet6.Repositories.Implementations
         {
             return await _dataContext.SuperHeroes.FindAsync(id);
         }
+
+        public async Task UpdateAsync()
+        {
+            await _dataContext.SaveChangesAsync();
+        }
     }
 }
