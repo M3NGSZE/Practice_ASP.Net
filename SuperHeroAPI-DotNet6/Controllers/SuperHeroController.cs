@@ -127,12 +127,14 @@ namespace SuperHeroAPI_DotNet6.Controllers
         [HttpGet("GetPagination")]
         public async Task<ActionResult<ApiResponse<ListResponse<SuperHeroDTO>>>> GetSuperheroPaginaton(
             [FromQuery] int page = 1,
-            [FromQuery] int size = 10)
+            [FromQuery] int size = 10,
+            [FromQuery] string? name = null
+        )
         {
             return Ok(new ApiResponse<ListResponse<SuperHeroDTO>>
                 (
                     message: "A Superhero successfully fetched",
-                    payload: await _superheroService.GetHeroaPaginationAsync(page, size)
+                    payload: await _superheroService.GetHeroaPaginationAsync(page, size, name)
                 )); ; ;
         }
     }

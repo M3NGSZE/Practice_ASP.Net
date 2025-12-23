@@ -60,7 +60,7 @@ namespace SuperHeroAPI_DotNet6.Services.Implementations
                 .ToList();
         }
 
-        public async Task<ListResponse<SuperHeroDTO>> GetHeroaPaginationAsync(int page, int size)
+        public async Task<ListResponse<SuperHeroDTO>> GetHeroaPaginationAsync(int page, int size, string? name)
         {
             /*var query = _superHeroRepository.QueryableAsync();
 
@@ -95,6 +95,15 @@ namespace SuperHeroAPI_DotNet6.Services.Implementations
 
             var query = _superHeroRepository.QueryableAsync();
 
+            // 🔍 SEARCH (optional)
+            if (!string.IsNullOrWhiteSpace(name))
+            {
+                /*query = query.Where(h => h.Name.Contains(name));*/
+                query = query.Where(h => h.Name.ToLower().Contains(name.ToLower()));
+                // PostgreSQL (case-insensitive alternative):
+                // query = query.Where(h => EF.Functions.ILike(h.Name, $"%{name}%"));
+            }
+
             var totalElements = await query.CountAsync();
 
             var heroes = await query
@@ -105,7 +114,8 @@ namespace SuperHeroAPI_DotNet6.Services.Implementations
                 {
                     Id = h.Id,
                     Name = h.Name,
-                   // Power = h.Power
+                    FirstName = h.FirstName,
+                    LastName = h.LastName,
                 })
                 .ToListAsync();
 

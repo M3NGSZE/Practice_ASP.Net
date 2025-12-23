@@ -19,6 +19,6 @@ namespace SuperHeroAPI_DotNet6.Services.Interfaces
 
         Task DeleteHeroByIdAsync(int id);
 
-        Task<ListResponse<SuperHeroDTO>> GetHeroaPaginationAsync(int page, int size);
+        Task<ListResponse<SuperHeroDTO>> GetHeroaPaginationAsync(int page, int size, string? name);
     }
 }
