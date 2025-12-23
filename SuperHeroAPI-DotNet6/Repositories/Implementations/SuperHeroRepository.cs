@@ -37,6 +37,17 @@ namespace SuperHeroAPI_DotNet6.Repositories.Implementations
             return await _dataContext.SuperHeroes.FindAsync(id);
         }
 
+        public IQueryable<SuperHero> QueryableAsync()
+        {
+            return _dataContext.SuperHeroes.AsQueryable();
+        }
+
+        /*public IQueryable<SuperHero>> QueryableAsync()
+        {
+            IQueryable<SuperHero> superHeroes = _dataContext.SuperHeroes.AsQueryable();
+            return null;
+        }*/
+
         public async Task UpdateAsync()
         {
             await _dataContext.SaveChangesAsync();

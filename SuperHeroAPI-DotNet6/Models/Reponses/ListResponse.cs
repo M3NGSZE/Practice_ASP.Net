@@ -4,6 +4,6 @@
     {
         public List<T> Elements { get; set; } = new();
 
-        PaginationReponse? PaginationReponse { get; set; }
+        public PaginationResponse? PaginationResponse { get; set; }
     }
 }

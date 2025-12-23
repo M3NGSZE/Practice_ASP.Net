@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using SuperHeroAPI_DotNet6.Middlewares;
 using SuperHeroAPI_DotNet6.Models.Dtos;
 using SuperHeroAPI_DotNet6.Models.Entities;
+using SuperHeroAPI_DotNet6.Models.Reponses;
 using SuperHeroAPI_DotNet6.Models.Requests;
 using SuperHeroAPI_DotNet6.Repositories.Interfaces;
 using SuperHeroAPI_DotNet6.Services.Interfaces;
@@ -56,6 +58,62 @@ namespace SuperHeroAPI_DotNet6.Services.Implementations
             return (await _superHeroRepository.GetAllAsync())
                 .Select(_mapper.Map<SuperHeroDTO>)
                 .ToList();
+        }
+
+        public async Task<ListResponse<SuperHeroDTO>> GetHeroaPaginationAsync(int page, int size)
+        {
+            /*var query = _superHeroRepository.QueryableAsync();
+
+            var totalElements = await query.CountAsync();          // total records
+            var totalPages = (int)Math.Ceiling(totalElements / (double)size);  // total pages
+
+            *//*            var heroes = await query
+                            .OrderBy(h => h.Id)                               // ensure consistent order
+                            .Skip((page - 1) * size)
+                            .Take(size)
+                            .ToListAsync();*//*
+
+            var heroes = await query
+                .OrderBy(h => h.Id)
+                .Skip((page - 1) * size)
+                .Take(size)
+                .Select(h => new SuperHeroDTO
+                {
+                    Id = h.Id,
+                    Name = h.Name,
+                    FirstName = h.FirstName,
+                    LastName = h.LastName,
+                 })
+                .ToListAsync();
+
+
+            return new ListResponse<SuperHeroDTO>
+            {
+                Elements = heroes,
+                PaginationResponse = PaginationResponse.CalculatePagination(totalElements, page, size)
+            };*/
+
+            var query = _superHeroRepository.QueryableAsync();
+
+            var totalElements = await query.CountAsync();
+
+            var heroes = await query
+                .OrderBy(h => h.Id)
+                .Skip((page - 1) * size)
+                .Take(size)
+                .Select(h => new SuperHeroDTO
+                {
+                    Id = h.Id,
+                    Name = h.Name,
+                   // Power = h.Power
+                })
+                .ToListAsync();
+
+            return new ListResponse<SuperHeroDTO>
+            {
+                Elements = heroes,
+                PaginationResponse = PaginationResponse.CalculatePagination(totalElements, page, size)
+            };
         }
 
         public async Task<SuperHeroDTO> GetHeroByIdAsync(int id)

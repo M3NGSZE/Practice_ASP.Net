@@ -13,5 +13,7 @@ namespace SuperHeroAPI_DotNet6.Repositories.Interfaces
         Task UpdateAsync();
 
         Task DeleteAsync(SuperHero entity);
+
+        IQueryable<SuperHero> QueryableAsync();
     }
 }

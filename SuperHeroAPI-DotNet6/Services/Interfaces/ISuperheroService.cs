@@ -1,5 +1,6 @@
 ﻿using SuperHeroAPI_DotNet6.Models.Dtos;
 using SuperHeroAPI_DotNet6.Models.Entities;
+using SuperHeroAPI_DotNet6.Models.Reponses;
 using SuperHeroAPI_DotNet6.Models.Requests;
 
 namespace SuperHeroAPI_DotNet6.Services.Interfaces
@@ -17,5 +18,7 @@ namespace SuperHeroAPI_DotNet6.Services.Interfaces
         Task<SuperHeroDTO> UpdateHeroAsync(int id, SuperHeroRequest superHeroRequest);
 
         Task DeleteHeroByIdAsync(int id);
+
+        Task<ListResponse<SuperHeroDTO>> GetHeroaPaginationAsync(int page, int size);
     }
 }

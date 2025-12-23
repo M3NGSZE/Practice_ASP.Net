@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using SuperHeroAPI_DotNet6.Models.Dtos;
 using SuperHeroAPI_DotNet6.Models.Entities;
 using SuperHeroAPI_DotNet6.Models.Reponse;
+using SuperHeroAPI_DotNet6.Models.Reponses;
 using SuperHeroAPI_DotNet6.Models.Requests;
 using SuperHeroAPI_DotNet6.Services.Interfaces;
 
@@ -65,7 +66,6 @@ namespace SuperHeroAPI_DotNet6.Controllers
             var apiResponse = new ApiResponse<List<SuperHero>>
                 (
                     message: "All superheroes successfully fetched",
-                    statusCode: 200,
                     payload: superHeroes
                 );
 
@@ -73,7 +73,7 @@ namespace SuperHeroAPI_DotNet6.Controllers
         }
 
         [HttpGet("{id:int}")]
-        public async Task<ActionResult<SuperHeroDTO>> GetAsyncById(int id)
+        public async Task<ActionResult<ApiResponse<SuperHeroDTO>>> GetAsyncById(int id)
         {
 
 /*            var apiResponse = new ApiResponse<SuperHeroDTO>
@@ -92,7 +92,7 @@ namespace SuperHeroAPI_DotNet6.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<SuperHeroDTO>> createSuperHero(SuperHeroRequest request)
+        public async Task<ActionResult<ApiResponse<SuperHeroDTO>>> createSuperHero(SuperHeroRequest request)
         {
             return Ok(new ApiResponse<SuperHeroDTO>
                 (
@@ -103,25 +103,37 @@ namespace SuperHeroAPI_DotNet6.Controllers
         }
 
         [HttpPut("{id:int}")]
-        public async Task<ActionResult<SuperHeroDTO>> UpdateSuperHero(int id, SuperHeroRequest request)
+        public async Task<ActionResult<ApiResponse<SuperHeroDTO>>> UpdateSuperHero(int id, SuperHeroRequest request)
         {
             return Ok(new ApiResponse<SuperHeroDTO>
                 (
                     message: "A superhero successfully updated",
-                    statusCode: 201,
+                    statusCode: 202,
                     payload: await _superheroService.UpdateHeroAsync(id, request)
                 )); 
         }
 
         [HttpDelete("{id:int}")]
-        public async Task<ActionResult<SuperHeroDTO>> DeleteSuperHero(int id)
+        public async Task<ActionResult<ApiResponse<SuperHeroDTO>>> DeleteSuperHero(int id)
         {
             await _superheroService.DeleteHeroByIdAsync(id);
             return Ok(new ApiResponse<SuperHeroDTO>
                 (
                     message: "A superhero successfully deleted",
-                    statusCode: 201
+                    statusCode: 204
                 )) ;
+        }
+
+        [HttpGet("GetPagination")]
+        public async Task<ActionResult<ApiResponse<ListResponse<SuperHeroDTO>>>> GetSuperheroPaginaton(
+            [FromQuery] int page = 1,
+            [FromQuery] int size = 10)
+        {
+            return Ok(new ApiResponse<ListResponse<SuperHeroDTO>>
+                (
+                    message: "A Superhero successfully fetched",
+                    payload: await _superheroService.GetHeroaPaginationAsync(page, size)
+                )); ; ;
         }
     }
 }
