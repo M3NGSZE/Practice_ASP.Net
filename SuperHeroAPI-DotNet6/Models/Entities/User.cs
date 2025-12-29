@@ -4,17 +4,13 @@ namespace SuperHeroAPI_DotNet6.Models.Entities
 {
     public class User : BaseEntity
     {
-        [Column("user_id")]
-        public required Guid UserId { get; set; } = Guid.NewGuid();
+        public Guid UserId { get; set; } = Guid.NewGuid();
 
-        [Column("email")]
-        public required String Email { get; set; }
+        public String Email { get; set; } = null!;
 
-        [Column("username")]
-        public required string UserName { get; set; }
+        public string UserName { get; set; } = null!;
 
-        [Column("password")]
-        public required string Password { get; set; }
+        public string Password { get; set; } = null!;
 
     }
 }
