@@ -11,12 +11,14 @@ namespace SuperHeroAPI_DotNet6.Data.Configurations
             builder.Property(e => e.CreatedAt)
                .HasColumnName("created_at")
                .HasDefaultValueSql("CURRENT_TIMESTAMP AT TIME ZONE 'UTC'")
-               .ValueGeneratedOnAdd();  // Only set on insert
+               .ValueGeneratedOnAdd()
+               .IsRequired();
 
             builder.Property(e => e.UpdatedAt)
                    .HasColumnName("updated_at")
                    .HasDefaultValueSql("CURRENT_TIMESTAMP AT TIME ZONE 'UTC'")
-                   .ValueGeneratedOnAddOrUpdate();  // Updated on insert AND update
+                   .ValueGeneratedOnAddOrUpdate()
+                   .IsRequired();
         }
 
     }

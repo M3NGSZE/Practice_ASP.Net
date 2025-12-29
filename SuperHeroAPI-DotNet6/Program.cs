@@ -6,6 +6,7 @@ using SuperHeroAPI_DotNet6.Repositories.Implementations;
 using SuperHeroAPI_DotNet6.Repositories.Interfaces;
 using SuperHeroAPI_DotNet6.Services.Implementations;
 using SuperHeroAPI_DotNet6.Services.Interfaces;
+using System;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,6 +23,7 @@ builder.Services.AddDbContext<DataContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 
+
 // DI
 builder.Services.AddScoped<ISuperHeroRepository, SuperHeroRepository>();
 builder.Services.AddScoped<ISuperheroService, SuperheroService>();
@@ -30,6 +32,7 @@ builder.Services.AddScoped<ISuperheroService, SuperheroService>();
 builder.Services.AddAutoMapper(typeof(Program));
 
 var app = builder.Build();
+
 
 // Middleware
 app.UseMiddleware<GlobalExceptionHandlerMiddleware>();

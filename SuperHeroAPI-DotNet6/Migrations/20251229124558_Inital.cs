@@ -1,12 +1,15 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
+
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
 
 namespace SuperHeroAPI_DotNet6.Migrations
 {
     /// <inheritdoc />
-    public partial class UserAndRole : Migration
+    public partial class Inital : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -23,6 +26,22 @@ namespace SuperHeroAPI_DotNet6.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_roles", x => x.role_id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "SuperHeroes",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    FirstName = table.Column<string>(type: "text", nullable: false),
+                    LastName = table.Column<string>(type: "text", nullable: false),
+                    Place = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SuperHeroes", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -68,6 +87,16 @@ namespace SuperHeroAPI_DotNet6.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.InsertData(
+                table: "roles",
+                columns: new[] { "role_id", "CreatedAt", "role_name", "UpdatedAt" },
+                values: new object[,]
+                {
+                    { new Guid("11111111-1111-1111-1111-111111111111"), new DateTimeOffset(new DateTime(2025, 12, 29, 12, 45, 58, 95, DateTimeKind.Unspecified).AddTicks(6644), new TimeSpan(0, 0, 0, 0, 0)), "Admin", new DateTimeOffset(new DateTime(2025, 12, 29, 12, 45, 58, 95, DateTimeKind.Unspecified).AddTicks(6647), new TimeSpan(0, 0, 0, 0, 0)) },
+                    { new Guid("22222222-2222-2222-2222-222222222222"), new DateTimeOffset(new DateTime(2025, 12, 29, 12, 45, 58, 95, DateTimeKind.Unspecified).AddTicks(6650), new TimeSpan(0, 0, 0, 0, 0)), "User", new DateTimeOffset(new DateTime(2025, 12, 29, 12, 45, 58, 95, DateTimeKind.Unspecified).AddTicks(6650), new TimeSpan(0, 0, 0, 0, 0)) },
+                    { new Guid("33333333-3333-3333-3333-333333333333"), new DateTimeOffset(new DateTime(2025, 12, 29, 12, 45, 58, 95, DateTimeKind.Unspecified).AddTicks(6653), new TimeSpan(0, 0, 0, 0, 0)), "SubAdmin", new DateTimeOffset(new DateTime(2025, 12, 29, 12, 45, 58, 95, DateTimeKind.Unspecified).AddTicks(6654), new TimeSpan(0, 0, 0, 0, 0)) }
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_roles_role_name",
                 table: "roles",
@@ -110,6 +139,9 @@ namespace SuperHeroAPI_DotNet6.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "SuperHeroes");
+
             migrationBuilder.DropTable(
                 name: "user_roles");
 

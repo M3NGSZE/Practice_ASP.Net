@@ -12,8 +12,8 @@ using SuperHeroAPI_DotNet6.Data;
 namespace SuperHeroAPI_DotNet6.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20251229094428_UserAndRole")]
-    partial class UserAndRole
+    [Migration("20251229124558_Inital")]
+    partial class Inital
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -76,6 +76,29 @@ namespace SuperHeroAPI_DotNet6.Migrations
                         .IsUnique();
 
                     b.ToTable("roles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            RoleId = new Guid("11111111-1111-1111-1111-111111111111"),
+                            CreatedAt = new DateTimeOffset(new DateTime(2025, 12, 29, 12, 45, 58, 95, DateTimeKind.Unspecified).AddTicks(6644), new TimeSpan(0, 0, 0, 0, 0)),
+                            Name = "Admin",
+                            UpdatedAt = new DateTimeOffset(new DateTime(2025, 12, 29, 12, 45, 58, 95, DateTimeKind.Unspecified).AddTicks(6647), new TimeSpan(0, 0, 0, 0, 0))
+                        },
+                        new
+                        {
+                            RoleId = new Guid("22222222-2222-2222-2222-222222222222"),
+                            CreatedAt = new DateTimeOffset(new DateTime(2025, 12, 29, 12, 45, 58, 95, DateTimeKind.Unspecified).AddTicks(6650), new TimeSpan(0, 0, 0, 0, 0)),
+                            Name = "User",
+                            UpdatedAt = new DateTimeOffset(new DateTime(2025, 12, 29, 12, 45, 58, 95, DateTimeKind.Unspecified).AddTicks(6650), new TimeSpan(0, 0, 0, 0, 0))
+                        },
+                        new
+                        {
+                            RoleId = new Guid("33333333-3333-3333-3333-333333333333"),
+                            CreatedAt = new DateTimeOffset(new DateTime(2025, 12, 29, 12, 45, 58, 95, DateTimeKind.Unspecified).AddTicks(6653), new TimeSpan(0, 0, 0, 0, 0)),
+                            Name = "SubAdmin",
+                            UpdatedAt = new DateTimeOffset(new DateTime(2025, 12, 29, 12, 45, 58, 95, DateTimeKind.Unspecified).AddTicks(6654), new TimeSpan(0, 0, 0, 0, 0))
+                        });
                 });
 
             modelBuilder.Entity("SuperHeroAPI_DotNet6.Models.Entities.SuperHero", b =>

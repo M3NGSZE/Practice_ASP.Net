@@ -4,13 +4,7 @@ namespace SuperHeroAPI_DotNet6.Models.Entities
 {
     public class BaseEntity
     {
-        /*        [Column("created_at")]
-                public DateTimeOffset? CreatedAt = DateTimeOffset.UtcNow;
-
-                [Column("updated_at")]
-                public DateTimeOffset UpdatedAT = DateTimeOffset.UtcNow;*/
-
-        public DateTimeOffset CreatedAt { get; private set; }
-        public DateTimeOffset UpdatedAt { get; private set; }
+        public DateTimeOffset CreatedAt { get; set; }
+        public DateTimeOffset UpdatedAt { get; set; }
     }
 }
