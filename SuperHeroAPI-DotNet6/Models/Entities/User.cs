@@ -12,5 +12,7 @@ namespace SuperHeroAPI_DotNet6.Models.Entities
 
         public string Password { get; set; } = null!;
 
+        // Many-to-Many: A User has many Roles
+        public ICollection<Role> Roles { get; set; } = new List<Role>();
     }
 }
