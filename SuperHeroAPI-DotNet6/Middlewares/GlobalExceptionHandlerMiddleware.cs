@@ -47,7 +47,8 @@ namespace SuperHeroAPI_DotNet6.Middlewares
                 Type = ex.GetType().Name,
                 Title = "Request failed",
                 Message = ex.Message,
-                Path = context.Request.Path
+                Path = context.Request.Path,
+                Errors = ex is BadRequestException bre ? bre.Errors : null
             };
 
             context.Response.ContentType = "application/json";

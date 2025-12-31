@@ -17,31 +17,34 @@ var builder = WebApplication.CreateBuilder(args);
 // ==================== SERVICE REGISTRATION (ALL BEFORE Build!) ====================
 
 // Add controllers and configure validation error response
-builder.Services.AddControllers()
-    .ConfigureApiBehaviorOptions(options =>
+// First: Add controllers (required for Web API)
+builder.Services.AddControllers();
+
+// Second: Customize validation error response (optional but recommended)
+builder.Services.Configure<ApiBehaviorOptions>(options =>
+{
+    options.InvalidModelStateResponseFactory = context =>
     {
-        options.InvalidModelStateResponseFactory = context =>
+        var errors = context.ModelState
+            .Where(x => x.Value!.Errors.Count > 0)
+            .ToDictionary(
+                x => x.Key,
+                x => x.Value!.Errors.Select(e => e.ErrorMessage).ToArray()
+            );
+
+        var response = new ApiErrorResponse
         {
-            var errors = context.ModelState
-                .Where(x => x.Value!.Errors.Count > 0)
-                .ToDictionary(
-                    x => x.Key,
-                    x => x.Value!.Errors.Select(e => e.ErrorMessage).ToArray()
-                );
-
-            var response = new ApiErrorResponse
-            {
-                Status = StatusCodes.Status400BadRequest,
-                Type = "ValidationError",
-                Title = "Validation failed",
-                Message = "One or more validation errors occurred",
-                Errors = errors,
-                Path = context.HttpContext.Request.Path
-            };
-
-            return new BadRequestObjectResult(response);
+            Status = StatusCodes.Status400BadRequest,
+            Type = "ValidationError",
+            Title = "Validation failed",
+            Message = "One or more validation errors occurred",
+            Errors = errors,
+            Path = context.HttpContext.Request.Path
         };
-    });
+
+        return new BadRequestObjectResult(response);
+    };
+});
 
 // Swagger
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

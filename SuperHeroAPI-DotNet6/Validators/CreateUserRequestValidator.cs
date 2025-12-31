@@ -7,9 +7,12 @@ namespace SuperHeroAPI_DotNet6.Validators
     {
         public CreateUserRequestValidator()
         {
+            // Stop on first failure per property
+            RuleLevelCascadeMode = CascadeMode.Stop;
+
             RuleFor(x => x.Email)
-                .EmailAddress()
-                .WithMessage("Please provide a valid email address.");
+                .NotEmpty().WithMessage("Email is required.")
+                .EmailAddress().WithMessage("Please provide a valid email address.");
 
             RuleFor(x => x.UserName)
                 .NotEmpty()

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using SuperHeroAPI_DotNet6.Models.Dtos;
 using SuperHeroAPI_DotNet6.Models.Reponse;
 using SuperHeroAPI_DotNet6.Models.Requests;
+using SuperHeroAPI_DotNet6.Services.Implementations;
 using SuperHeroAPI_DotNet6.Services.Interfaces;
 
 namespace SuperHeroAPI_DotNet6.Controllers
@@ -21,11 +22,11 @@ namespace SuperHeroAPI_DotNet6.Controllers
         [HttpPost("register")]
         public async Task<ActionResult<ApiResponse<UserDTO>>> RegisterUser(UserRequest userRequest)
         {
-            return Ok(new ApiResponse<SuperHeroDTO>
+            return Ok(new ApiResponse<UserDTO>
                 (
                     message: "A new user successfully created",
                     statusCode: 201,
-                    payload: null
+                    payload: await _authService.RegisterAsync(userRequest)
                 ));
         }
     }
