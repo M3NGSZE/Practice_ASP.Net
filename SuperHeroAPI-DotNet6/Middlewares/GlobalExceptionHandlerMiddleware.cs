@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System.ComponentModel.DataAnnotations;
+using SuperHeroAPI_DotNet6.Models.Reponses;
 using System.Net;
 using System.Text.Json;
 
@@ -41,25 +41,19 @@ namespace SuperHeroAPI_DotNet6.Middlewares
                 _ => StatusCodes.Status500InternalServerError
             };
 
-            var problem = new ProblemDetails
+            var response = new ApiErrorResponse
             {
-                Title = statusCode == 500 ? "An unexpected error occurred" : "An error occurred",
-                Detail = statusCode == 500 ? "Internal server error" : ex.Message, // Hide details in prod for 500
                 Status = statusCode,
-                Instance = context.Request.Path
+                Type = ex.GetType().Name,
+                Title = "Request failed",
+                Message = ex.Message,
+                Path = context.Request.Path
             };
 
-            // Optional: add errors dictionary for custom exceptions too
-            if (ex is ValidationException validationEx)
-            {
-                problem.Extensions["errors"] = validationEx.Errors; // if you have a dict
-            }
-
             context.Response.ContentType = "application/json";
-            context.Response.StatusCode = problem.Status.Value;
+            context.Response.StatusCode = statusCode;
 
-
-            return context.Response.WriteAsJsonAsync(problem);
+            return context.Response.WriteAsJsonAsync(response);
         }
     }
 }

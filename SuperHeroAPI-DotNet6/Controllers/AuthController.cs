@@ -18,7 +18,7 @@ namespace SuperHeroAPI_DotNet6.Controllers
             _authService = authService;
         }
 
-        [HttpPost]
+        [HttpPost("register")]
         public async Task<ActionResult<ApiResponse<UserDTO>>> RegisterUser(UserRequest userRequest)
         {
             return Ok(new ApiResponse<SuperHeroDTO>
