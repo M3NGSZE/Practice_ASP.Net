@@ -1,5 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using SuperHeroAPI_DotNet6.Models.Dtos;
+using SuperHeroAPI_DotNet6.Models.Reponse;
+using SuperHeroAPI_DotNet6.Models.Requests;
+using SuperHeroAPI_DotNet6.Services.Interfaces;
 
 namespace SuperHeroAPI_DotNet6.Controllers
 {
@@ -7,5 +11,22 @@ namespace SuperHeroAPI_DotNet6.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
+        private readonly IAuthService _authService;
+
+        public AuthController(IAuthService authService)
+        {
+            _authService = authService;
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<ApiResponse<UserDTO>>> RegisterUser(UserRequest userRequest)
+        {
+            return Ok(new ApiResponse<SuperHeroDTO>
+                (
+                    message: "A new user successfully created",
+                    statusCode: 201,
+                    payload: null
+                ));
+        }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 using System.Net;
 using System.Text.Json;
 
@@ -32,14 +33,7 @@ namespace SuperHeroAPI_DotNet6.Middlewares
 
         private static Task HandleExceptionAsync(HttpContext context, Exception ex)
         {
-            var problem = new ProblemDetails
-            {
-                Title = "An error occurred",
-                Detail = ex.Message,
-                Instance = context.Request.Path
-            };
-
-            problem.Status = ex switch
+            var statusCode = ex switch
             {
                 BadRequestException => StatusCodes.Status400BadRequest,
                 UnauthorizedException => StatusCodes.Status401Unauthorized,
@@ -47,8 +41,23 @@ namespace SuperHeroAPI_DotNet6.Middlewares
                 _ => StatusCodes.Status500InternalServerError
             };
 
+            var problem = new ProblemDetails
+            {
+                Title = statusCode == 500 ? "An unexpected error occurred" : "An error occurred",
+                Detail = statusCode == 500 ? "Internal server error" : ex.Message, // Hide details in prod for 500
+                Status = statusCode,
+                Instance = context.Request.Path
+            };
+
+            // Optional: add errors dictionary for custom exceptions too
+            if (ex is ValidationException validationEx)
+            {
+                problem.Extensions["errors"] = validationEx.Errors; // if you have a dict
+            }
+
             context.Response.ContentType = "application/json";
             context.Response.StatusCode = problem.Status.Value;
+
 
             return context.Response.WriteAsJsonAsync(problem);
         }
