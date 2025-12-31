@@ -6,6 +6,7 @@ namespace SuperHeroAPI_DotNet6.Services.Interfaces
     public interface IAuthService
     {
         Task<AuthDTO> LoginAsync(AuthRequest authRequest);
+
         Task<UserDTO> RegisterAsync(UserRequest userRequest);
     }
 }
