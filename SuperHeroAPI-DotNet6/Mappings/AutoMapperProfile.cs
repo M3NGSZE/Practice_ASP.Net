@@ -15,6 +15,14 @@ namespace SuperHeroAPI_DotNet6.Mappings
             CreateMap<SuperHeroRequest, SuperHero>();
 
             CreateMap<SuperHeroDTO, SuperHero>();
+
+            CreateMap<User, UserDTO>()
+                .ForMember(
+                    dest => dest.roles,
+                    opt => opt.MapFrom(src => src.Roles.Select(r => r.Name))
+            );
+
+            CreateMap<UserRequest, User>();
         }
     }
 }

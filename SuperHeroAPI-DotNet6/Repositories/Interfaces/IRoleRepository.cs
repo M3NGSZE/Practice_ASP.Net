@@ -2,8 +2,8 @@
 
 namespace SuperHeroAPI_DotNet6.Repositories.Interfaces
 {
-    public interface IAuthRepository
+    public interface IRoleRepository
     {
-        Task<User> CreateAsync(User user);
+        Task<Role> GetRoleAsync(string role);
     }
 }

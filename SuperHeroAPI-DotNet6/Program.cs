@@ -66,6 +66,10 @@ builder.Services.AddDbContext<DataContext>(options =>
 builder.Services.AddScoped<ISuperHeroRepository, SuperHeroRepository>();
 builder.Services.AddScoped<ISuperheroService, SuperheroService>();
 
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+
+builder.Services.AddScoped<IRoleRepository, RoleRepository>();
+
 // Auth DI
 builder.Services.AddScoped<IAuthRepository, AuthRepository>();
 builder.Services.AddScoped<IAuthService, AuthService>();

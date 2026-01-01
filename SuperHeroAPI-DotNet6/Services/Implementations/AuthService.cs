@@ -17,12 +17,16 @@ namespace SuperHeroAPI_DotNet6.Services.Implementations
         private readonly IValidator<UserRequest> _userValidator;
         private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
+        private readonly IRoleRepository _roleRepository;
+        private readonly IAuthRepository _authRepository;
 
-        public AuthService(IValidator<UserRequest> userValidator, IUserRepository userRepository, IMapper mapper)
+        public AuthService(IValidator<UserRequest> userValidator, IUserRepository userRepository, IMapper mapper, IRoleRepository roleRepository, IAuthRepository authRepository)
         {
             _userValidator = userValidator;
             _userRepository = userRepository;
             _mapper = mapper;
+            _roleRepository = roleRepository;
+            _authRepository = authRepository;
         }
 
         public Task<AuthDTO> LoginAsync(AuthRequest authRequest)
@@ -52,25 +56,40 @@ namespace SuperHeroAPI_DotNet6.Services.Implementations
                 );
             }
 
-            var trimmedEmail = userRequest.Email.Trim();
-            var trimmedUsername = userRequest.UserName.Trim();
-            var trimmedPassword = userRequest.Password.Trim();
+            // Proceed with user creation...
 
-            var oldUser = await _userRepository.GetUserByEmailOrUsernameAsync(trimmedEmail, trimmedUsername);
+            /*            var trimmedEmail = userRequest.Email.Trim();
+                        var trimmedUsername = userRequest.UserName.Trim();
+                        var trimmedPassword = userRequest.Password.Trim();*/
+
+            userRequest.Email = userRequest.Email?.Trim() ?? string.Empty;
+            userRequest.UserName = userRequest.UserName?.Trim() ?? string.Empty;
+            userRequest.Password = userRequest.Password?.Trim() ?? string.Empty;
+
+            var oldUser = await _userRepository.GetUserByEmailOrUsernameAsync(userRequest.Email.ToLower(), userRequest.UserName.ToLower());
 
             if (oldUser != null)
                 throw new BadRequestException("Email or Username already used");
 
-            var newUser = new User();
+            //var newUser = new User();
+            var register = _mapper.Map<User>(userRequest);
             var hashPassword = new PasswordHasher<User>()
-                .HashPassword(newUser, trimmedPassword);
+                .HashPassword(register, userRequest.Password);
 
-            newUser.Email = trimmedEmail;
-            newUser.UserName = trimmedUsername;
-            newUser.Password = trimmedPassword;
+            /*            newUser.Email = trimmedEmail;
+                        newUser.UserName = trimmedUsername;*/
+            register.Password = hashPassword;
 
-            return null;
-            // Proceed with user creation...
+            var userRole =  await _roleRepository.GetRoleAsync("User");
+
+            if (userRole == null)
+                throw new NotFoundException("Default row not found");
+
+            register.Roles.Add(userRole);
+
+            var newUser = await _authRepository.CreateAsync(register);
+
+            return _mapper.Map<UserDTO>(newUser);
         }
     }
 }

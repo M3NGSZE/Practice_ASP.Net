@@ -5,20 +5,18 @@ using SuperHeroAPI_DotNet6.Repositories.Interfaces;
 
 namespace SuperHeroAPI_DotNet6.Repositories.Implementations
 {
-    public class UserRepository : IUserRepository
+    public class RoleRepository : IRoleRepository
     {
         private readonly DataContext _dataContext;
 
-        public UserRepository(DataContext dataContext)
+        public RoleRepository(DataContext dataContext)
         {
             _dataContext = dataContext;
         }
 
-        public async Task<User?> GetUserByEmailOrUsernameAsync(string email, string username)
+        public async Task<Role?> GetRoleAsync(string role)
         {
-            return await _dataContext.Users.FirstOrDefaultAsync(u => 
-                u.Email.ToLower() == email ||
-                u.UserName.ToLower() == username);
+            return await _dataContext.Roles.FirstOrDefaultAsync(r => r.Name.Equals(role));
         }
     }
 }

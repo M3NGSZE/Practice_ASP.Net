@@ -53,23 +53,41 @@ namespace SuperHeroAPI_DotNet6.Data.Configurations
             );
 
             // Many-to-Many relationship (EF Core 5+ implicit junction)
-            builder.HasMany(u => u.Roles)
+            /*builder.HasMany(u => u.Roles)
                    .WithMany(r => r.Users)
                    .UsingEntity(j =>
                    {
                        j.ToTable("user_roles");           // Custom junction table name
 
-                       // Junction table columns
-                       j.Property<Guid>("user_id");
-                       j.Property<Guid>("role_id");
-
+                       // Remove these lines — they cause the duplicates!
+                       *//*                       // Junction table columns
+                                              j.Property<Guid>("user_id");
+                                              j.Property<Guid>("role_id");
+                       *//*
                        // Composite primary key
                        j.HasKey("user_id", "role_id");
 
                        // Indexes for performance
                        j.HasIndex("user_id");
                        j.HasIndex("role_id");
-                   });
+                   });*/
+            builder.HasMany(u => u.Roles)
+       .WithMany(r => r.Users)
+       .UsingEntity<Dictionary<string, object>>(
+           "user_roles",  // table name
+           j => j.HasOne<Role>().WithMany().HasForeignKey("role_id").OnDelete(DeleteBehavior.Cascade),
+           j => j.HasOne<User>().WithMany().HasForeignKey("user_id").OnDelete(DeleteBehavior.Cascade),
+           j =>
+           {
+               // Explicitly define the shadow properties with their types
+               j.Property<Guid>("user_id");
+               j.Property<Guid>("role_id");
+
+               j.HasKey("user_id", "role_id");
+
+               j.HasIndex("user_id");
+               j.HasIndex("role_id");
+           });
         }
     }
 }
