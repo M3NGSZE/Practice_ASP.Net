@@ -3,6 +3,7 @@ using AutoMapper;
 using FluentValidation;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
+using SuperHeroAPI_DotNet6.Auth;
 using SuperHeroAPI_DotNet6.Middlewares;
 using SuperHeroAPI_DotNet6.Models.Dtos;
 using SuperHeroAPI_DotNet6.Models.Entities;
@@ -24,7 +25,9 @@ namespace SuperHeroAPI_DotNet6.Services.Implementations
         private readonly IMapper _mapper;
         private readonly IRoleRepository _roleRepository;
         private readonly IAuthRepository _authRepository;
-        private readonly IConfiguration _configuration;
+        //private readonly IConfiguration _configuration;
+        private readonly JwtService _jwtService;
+
 
         public AuthService(
             IValidator<UserRequest> userValidator, 
@@ -33,7 +36,8 @@ namespace SuperHeroAPI_DotNet6.Services.Implementations
             IMapper mapper, 
             IRoleRepository roleRepository, 
             IAuthRepository authRepository, 
-            IConfiguration configuration
+            //IConfiguration configuration
+            JwtService jwtService
             )
         {
             _userValidator = userValidator;
@@ -42,7 +46,8 @@ namespace SuperHeroAPI_DotNet6.Services.Implementations
             _mapper = mapper;
             _roleRepository = roleRepository;
             _authRepository = authRepository;
-            _configuration = configuration;
+            //_configuration = configuration;
+            _jwtService = jwtService;
         }
 
         public async Task<AuthDTO> LoginAsync(AuthRequest authRequest)
@@ -77,7 +82,7 @@ namespace SuperHeroAPI_DotNet6.Services.Implementations
             if (new PasswordHasher<User>().VerifyHashedPassword(login, login.Password, authRequest.Password) == PasswordVerificationResult.Failed)
                 throw new BadRequestException("Invalid Email or Password");
 
-            string token = CreateToken(login);
+            string token = _jwtService.CreateToken(login);
 
             AuthDTO authDTO = _mapper.Map<AuthDTO>(login);
             authDTO.Token = token;
@@ -85,7 +90,7 @@ namespace SuperHeroAPI_DotNet6.Services.Implementations
             return authDTO;
         }
 
-        public string CreateToken(User user)
+/*        public string CreateToken(User user)
         {
             var claims = new List<Claim>
             {
@@ -108,7 +113,7 @@ namespace SuperHeroAPI_DotNet6.Services.Implementations
                 );
 
             return new JwtSecurityTokenHandler().WriteToken(tokenDescriptor);
-        }
+        }*/
 
         public async Task<UserDTO> RegisterAsync(UserRequest userRequest)
         {

@@ -2,6 +2,7 @@ using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using SuperHeroAPI_DotNet6.Auth;
 using SuperHeroAPI_DotNet6.Data;
 using SuperHeroAPI_DotNet6.Middlewares;
 using SuperHeroAPI_DotNet6.Models.Reponses;
@@ -60,6 +61,9 @@ builder.Services.AddDbContext<DataContext>(options =>
 {
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
+
+// DI Jwt
+builder.Services.AddScoped<JwtService>();
 
 
 // DI
