@@ -25,6 +25,12 @@ namespace SuperHeroAPI_DotNet6.Auth
                 new Claim(ClaimTypes.Email, user.Email),
             };
 
+            // 🔥 ADD ROLES
+            foreach (var role in user.Roles)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, role.Name));
+            }
+
             var key = new SymmetricSecurityKey(
                 Encoding.UTF8.GetBytes(_configuration.GetValue<string>("AppSettings:Token")!));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512);

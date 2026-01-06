@@ -25,7 +25,6 @@ namespace SuperHeroAPI_DotNet6.Services.Implementations
         private readonly IMapper _mapper;
         private readonly IRoleRepository _roleRepository;
         private readonly IAuthRepository _authRepository;
-        //private readonly IConfiguration _configuration;
         private readonly JwtService _jwtService;
 
 
@@ -36,7 +35,6 @@ namespace SuperHeroAPI_DotNet6.Services.Implementations
             IMapper mapper, 
             IRoleRepository roleRepository, 
             IAuthRepository authRepository, 
-            //IConfiguration configuration
             JwtService jwtService
             )
         {
@@ -46,7 +44,6 @@ namespace SuperHeroAPI_DotNet6.Services.Implementations
             _mapper = mapper;
             _roleRepository = roleRepository;
             _authRepository = authRepository;
-            //_configuration = configuration;
             _jwtService = jwtService;
         }
 
@@ -72,7 +69,7 @@ namespace SuperHeroAPI_DotNet6.Services.Implementations
             authRequest.Email = authRequest.Email?.Trim() ?? string.Empty;
             authRequest.Password = authRequest.Password?.Trim() ?? string.Empty;
 
-            var login = await _userRepository.GetUserByEmailOrUsernameAsync(authRequest.Email.ToLower(), "");
+            var login = await _userRepository.GetUserByEmailAsync(authRequest.Email.ToLower());
 
             Console.WriteLine("object user login" + login);
 
@@ -89,31 +86,6 @@ namespace SuperHeroAPI_DotNet6.Services.Implementations
 
             return authDTO;
         }
-
-/*        public string CreateToken(User user)
-        {
-            var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),
-                new Claim(ClaimTypes.Name, user.UserName),
-                new Claim(ClaimTypes.Email, user.Email),
-            };
-
-            var key = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(_configuration.GetValue<string>("AppSettings:Token")!));
-
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512);
-
-            var tokenDescriptor = new JwtSecurityToken(
-                issuer: _configuration.GetValue<string>("AppSettings:Issuer"),
-                audience: _configuration.GetValue<string>("AppSettings:Audience"),
-                claims: claims,
-                expires: DateTime.UtcNow.AddDays(1),
-                signingCredentials: creds
-                );
-
-            return new JwtSecurityTokenHandler().WriteToken(tokenDescriptor);
-        }*/
 
         public async Task<UserDTO> RegisterAsync(UserRequest userRequest)
         {

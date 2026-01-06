@@ -14,6 +14,13 @@ namespace SuperHeroAPI_DotNet6.Repositories.Implementations
             _dataContext = dataContext;
         }
 
+        public async Task<User?> GetUserByEmailAsync(string email)
+        {
+            return await _dataContext.Users
+                .Include(u => u.Roles)
+                .FirstOrDefaultAsync(u => u.Email.ToLower() == email);
+        }
+
         public async Task<User?> GetUserByEmailOrUsernameAsync(string email, string username)
         {
             return await _dataContext.Users.FirstOrDefaultAsync(u => 
