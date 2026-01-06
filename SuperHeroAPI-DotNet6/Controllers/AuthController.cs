@@ -29,5 +29,15 @@ namespace SuperHeroAPI_DotNet6.Controllers
                     payload: await _authService.RegisterAsync(userRequest)
                 ));
         }
+
+        [HttpPost]
+        public async Task<ActionResult<ApiResponse<AuthDTO>>> Login(AuthRequest authRequest)
+        {
+            return Ok(new ApiResponse<AuthDTO>
+                (
+                    message: "Login Successfully",
+                    payload: await _authService.LoginAsync(authRequest)
+                )) ;
+        }
     }
 }

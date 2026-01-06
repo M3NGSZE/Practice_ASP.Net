@@ -22,6 +22,8 @@ namespace SuperHeroAPI_DotNet6.Mappings
                     opt => opt.MapFrom(src => src.Roles.Select(r => r.Name))
             );
 
+            CreateMap<User, AuthDTO>();
+
             CreateMap<UserRequest, User>();
         }
     }
