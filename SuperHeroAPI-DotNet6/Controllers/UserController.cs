@@ -4,15 +4,11 @@ using Microsoft.AspNetCore.Mvc;
 using SuperHeroAPI_DotNet6.Models.Dtos;
 using SuperHeroAPI_DotNet6.Models.Reponse;
 using SuperHeroAPI_DotNet6.Models.Requests;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace SuperHeroAPI_DotNet6.Controllers
 {
-    /// <summary>
-    /// Admin operations controller
-    /// </summary>
-    /// <remarks>
-    /// Only Admin users can access these endpoints.
-    /// </remarks>
+    [SwaggerTag("Controller Test Token And Role Access Restriction")]
     [Route("api/v1/[controller]")]
     [ApiController]
     public class UserController : ControllerBase
@@ -45,8 +41,12 @@ namespace SuperHeroAPI_DotNet6.Controllers
                 ));
         }
 
+        [SwaggerOperation(
+            Summary = "Admin and Subadmin only endpoint",
+            Description = "This endpoint is only accessible by Admin and Subadmin users"
+        )]
         [Authorize(Policy = "AdminOrSubAdmin")]
-        [HttpGet("token-admin-subadmin-role")]
+        [HttpGet("token3")]
         public async Task<ActionResult<List<UserDTO>>> GetALlUsersAdminOrSubAdminAsync()
         {
             return Ok(new ApiResponse<UserDTO>
