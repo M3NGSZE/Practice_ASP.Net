@@ -14,5 +14,9 @@ namespace SuperHeroAPI_DotNet6.Models.Entities
 
         // Many-to-Many: A User has many Roles
         public ICollection<Role> Roles { get; set; } = new List<Role>();
+
+        public string? RefreshToken { get; set; }
+
+        public DateTime? RefreshTokenExpiryTime { get; set; }
     }
 }

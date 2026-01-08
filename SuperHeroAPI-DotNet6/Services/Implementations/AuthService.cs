@@ -4,6 +4,7 @@ using FluentValidation;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using SuperHeroAPI_DotNet6.Auth;
+using SuperHeroAPI_DotNet6.Data;
 using SuperHeroAPI_DotNet6.Middlewares;
 using SuperHeroAPI_DotNet6.Models.Dtos;
 using SuperHeroAPI_DotNet6.Models.Entities;
@@ -26,6 +27,7 @@ namespace SuperHeroAPI_DotNet6.Services.Implementations
         private readonly IRoleRepository _roleRepository;
         private readonly IAuthRepository _authRepository;
         private readonly JwtService _jwtService;
+        private readonly DataContext _dataContext;
 
 
         public AuthService(
@@ -35,7 +37,8 @@ namespace SuperHeroAPI_DotNet6.Services.Implementations
             IMapper mapper, 
             IRoleRepository roleRepository, 
             IAuthRepository authRepository, 
-            JwtService jwtService
+            JwtService jwtService,
+            DataContext dataContext
             )
         {
             _userValidator = userValidator;
@@ -45,6 +48,7 @@ namespace SuperHeroAPI_DotNet6.Services.Implementations
             _roleRepository = roleRepository;
             _authRepository = authRepository;
             _jwtService = jwtService;
+            _dataContext = dataContext;
         }
 
         public async Task<AuthDTO> LoginAsync(AuthRequest authRequest)
@@ -71,18 +75,18 @@ namespace SuperHeroAPI_DotNet6.Services.Implementations
 
             var login = await _userRepository.GetUserByEmailAsync(authRequest.Email.ToLower());
 
-            Console.WriteLine("object user login" + login);
-
             if (login == null)
                 throw new NotFoundException("Email not found");
 
             if (new PasswordHasher<User>().VerifyHashedPassword(login, login.Password, authRequest.Password) == PasswordVerificationResult.Failed)
                 throw new BadRequestException("Invalid Email or Password");
 
-            string token = _jwtService.CreateToken(login);
+            string accesstoken = _jwtService.CreateToken(login);
+            string refreshToken = await _jwtService.GenerateAndSaveRefreshTokenAsync(login, _dataContext);
 
             AuthDTO authDTO = _mapper.Map<AuthDTO>(login);
-            authDTO.Token = token;
+            authDTO.AccessToken = accesstoken;
+            authDTO.RefreshToken = refreshToken;
 
             return authDTO;
         }

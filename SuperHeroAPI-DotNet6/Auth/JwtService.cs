@@ -1,8 +1,10 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using SuperHeroAPI_DotNet6.Data;
 using SuperHeroAPI_DotNet6.Models.Entities;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace SuperHeroAPI_DotNet6.Auth
@@ -44,6 +46,25 @@ namespace SuperHeroAPI_DotNet6.Auth
                 );
 
             return new JwtSecurityTokenHandler().WriteToken(tokenDescriptor);
+        }
+
+        private string GenerateRefreshToken()
+        {
+            var randomNumber = new Byte[32];
+            using var rng =  RandomNumberGenerator.Create();
+            rng.GetBytes(randomNumber);
+
+            return Convert.ToBase64String(randomNumber);
+        }
+
+        public async Task<string> GenerateAndSaveRefreshTokenAsync(User user, DataContext dataContext)
+        {
+            var refrshToken = GenerateRefreshToken();
+            user.RefreshToken = refrshToken;
+            user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
+            await dataContext.SaveChangesAsync();
+
+            return refrshToken;
         }
     }
 }
