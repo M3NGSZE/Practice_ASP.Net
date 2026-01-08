@@ -7,6 +7,12 @@ using SuperHeroAPI_DotNet6.Models.Requests;
 
 namespace SuperHeroAPI_DotNet6.Controllers
 {
+    /// <summary>
+    /// Admin operations controller
+    /// </summary>
+    /// <remarks>
+    /// Only Admin users can access these endpoints.
+    /// </remarks>
     [Route("api/v1/[controller]")]
     [ApiController]
     public class UserController : ControllerBase
@@ -22,6 +28,12 @@ namespace SuperHeroAPI_DotNet6.Controllers
                 ));
         }
 
+        /// <summary>
+        /// Admin endpoint: only accessible by Admin users
+        /// </summary>
+        /// <remarks>
+        /// This endpoint allows Admins to see system overview.
+        /// </remarks>
         [Authorize(Policy = "AdminOnly")]
         [HttpGet("token-admin-role")]
         public async Task<ActionResult<List<UserDTO>>> GetALlUsersAdminAsync()
