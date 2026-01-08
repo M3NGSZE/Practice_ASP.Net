@@ -8,6 +8,7 @@ using SuperHeroAPI_DotNet6.Data;
 using SuperHeroAPI_DotNet6.Middlewares;
 using SuperHeroAPI_DotNet6.Models.Dtos;
 using SuperHeroAPI_DotNet6.Models.Entities;
+using SuperHeroAPI_DotNet6.Models.Reponses;
 using SuperHeroAPI_DotNet6.Models.Requests;
 using SuperHeroAPI_DotNet6.Repositories.Interfaces;
 using SuperHeroAPI_DotNet6.Services.Interfaces;
@@ -81,14 +82,35 @@ namespace SuperHeroAPI_DotNet6.Services.Implementations
             if (new PasswordHasher<User>().VerifyHashedPassword(login, login.Password, authRequest.Password) == PasswordVerificationResult.Failed)
                 throw new BadRequestException("Invalid Email or Password");
 
-            string accesstoken = _jwtService.CreateToken(login);
-            string refreshToken = await _jwtService.GenerateAndSaveRefreshTokenAsync(login, _dataContext);
+            var tokenReponse = await CreateTokenReponse(login, _dataContext);
+
+/*            string accesstoken = _jwtService.CreateToken(login);
+            string refreshToken = await _jwtService.GenerateAndSaveRefreshTokenAsync(login, _dataContext);*/
 
             AuthDTO authDTO = _mapper.Map<AuthDTO>(login);
-            authDTO.AccessToken = accesstoken;
-            authDTO.RefreshToken = refreshToken;
+            authDTO.AccessToken = tokenReponse.AccessToken;
+            authDTO.RefreshToken = tokenReponse.RefreshToken;
 
             return authDTO;
+        }
+
+        private async Task<TokenReponse> CreateTokenReponse(User user, DataContext dataContext)
+        {
+            return new TokenReponse
+            {
+                AccessToken = _jwtService.CreateToken(user),
+                RefreshToken = await _jwtService.GenerateAndSaveRefreshTokenAsync(user, dataContext)
+            };
+        }
+
+        public async Task<TokenReponse> RefreshTokenAsync(RefreshTokenRequest refreshTokenRequest)
+        {
+            var user = await _jwtService.ValidateRefreshTokenAsync(refreshTokenRequest, _dataContext);
+
+            if (user is null)
+                throw new UnauthorizedAccessException("Invalid refresh token");
+            
+            return await CreateTokenReponse(user, _dataContext);
         }
 
         public async Task<UserDTO> RegisterAsync(UserRequest userRequest)

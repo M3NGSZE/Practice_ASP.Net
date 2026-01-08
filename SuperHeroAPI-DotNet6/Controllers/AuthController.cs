@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using SuperHeroAPI_DotNet6.Models.Dtos;
 using SuperHeroAPI_DotNet6.Models.Reponse;
+using SuperHeroAPI_DotNet6.Models.Reponses;
 using SuperHeroAPI_DotNet6.Models.Requests;
 using SuperHeroAPI_DotNet6.Services.Implementations;
 using SuperHeroAPI_DotNet6.Services.Interfaces;
@@ -38,6 +39,17 @@ namespace SuperHeroAPI_DotNet6.Controllers
                     message: "Login Successfully",
                     payload: await _authService.LoginAsync(authRequest)
                 )) ;
+        }
+
+        [HttpPost("refresh-token")]
+        public async Task<ActionResult<TokenReponse>> RefreshToken(RefreshTokenRequest tokenRequest)
+        {
+            return Ok(new ApiResponse<TokenReponse>
+               (
+                   message: "Login Successfully",
+                   statusCode: 201,
+                   payload: await _authService.RefreshTokenAsync(tokenRequest)
+               ));
         }
     }
 }

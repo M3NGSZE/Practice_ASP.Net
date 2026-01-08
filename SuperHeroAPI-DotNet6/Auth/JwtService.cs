@@ -2,6 +2,7 @@
 using Microsoft.IdentityModel.Tokens;
 using SuperHeroAPI_DotNet6.Data;
 using SuperHeroAPI_DotNet6.Models.Entities;
+using SuperHeroAPI_DotNet6.Models.Requests;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
@@ -65,6 +66,18 @@ namespace SuperHeroAPI_DotNet6.Auth
             await dataContext.SaveChangesAsync();
 
             return refrshToken;
+        }
+
+        public async Task<User?> ValidateRefreshTokenAsync(RefreshTokenRequest request, DataContext dataContext)
+        {
+            var user = await dataContext.Users.FindAsync(request.UserId);
+
+            if(user is null || user.RefreshToken != request.RefreshToken || user.RefreshTokenExpiryTime <= DateTime.UtcNow)
+            {
+                return null;
+            }
+
+            return user;
         }
     }
 }
