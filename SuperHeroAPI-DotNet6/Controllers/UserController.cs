@@ -14,7 +14,7 @@ namespace SuperHeroAPI_DotNet6.Controllers
     public class UserController : ControllerBase
     {
         [Authorize]
-        [HttpGet("token-no-role")]
+        [HttpGet("token1")]
         public async Task<ActionResult<List<UserDTO>>> GetALlUsersAsync()
         {
             return Ok(new ApiResponse<UserDTO>
@@ -31,7 +31,7 @@ namespace SuperHeroAPI_DotNet6.Controllers
         /// This endpoint allows Admins to see system overview.
         /// </remarks>
         [Authorize(Policy = "AdminOnly")]
-        [HttpGet("token-admin-role")]
+        [HttpGet("token2")]
         public async Task<ActionResult<List<UserDTO>>> GetALlUsersAdminAsync()
         {
             return Ok(new ApiResponse<UserDTO>
