@@ -12,8 +12,30 @@ namespace SuperHeroAPI_DotNet6.Controllers
     public class UserController : ControllerBase
     {
         [Authorize]
-        [HttpGet]
+        [HttpGet("token-no-role")]
         public async Task<ActionResult<List<UserDTO>>> GetALlUsersAsync()
+        {
+            return Ok(new ApiResponse<UserDTO>
+                (
+            message: "All users successfully fetched",
+                    payload: null
+                ));
+        }
+
+        [Authorize(Policy = "AdminOnly")]
+        [HttpGet("token-admin-role")]
+        public async Task<ActionResult<List<UserDTO>>> GetALlUsersAdminAsync()
+        {
+            return Ok(new ApiResponse<UserDTO>
+                (
+            message: "All users successfully fetched",
+                    payload: null
+                ));
+        }
+
+        [Authorize(Policy = "AdminOrSubAdmin")]
+        [HttpGet("token-admin-subadmin-role")]
+        public async Task<ActionResult<List<UserDTO>>> GetALlUsersAdminOrSubAdminAsync()
         {
             return Ok(new ApiResponse<UserDTO>
                 (

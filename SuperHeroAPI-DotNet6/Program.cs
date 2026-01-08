@@ -88,6 +88,22 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
+// 2.5 Role
+builder.Services.AddAuthorization(options =>
+{
+    // Only Admin
+    options.AddPolicy("AdminOnly", policy =>
+        policy.RequireRole("Admin"));
+
+    // Only SubAdmin
+    options.AddPolicy("SubAdminOnly", policy =>
+        policy.RequireRole("SubAdmin"));
+
+    // Admin or SubAdmin (exclude User)
+    options.AddPolicy("AdminOrSubAdmin", policy =>
+        policy.RequireRole("Admin", "SubAdmin"));
+});
+
 // 3. Authorization
 builder.Services.AddAuthorization();
 
