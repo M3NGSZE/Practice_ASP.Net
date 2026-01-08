@@ -1,7 +1,9 @@
 using FluentValidation;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
 using SuperHeroAPI_DotNet6.Auth;
 using SuperHeroAPI_DotNet6.Data;
 using SuperHeroAPI_DotNet6.Middlewares;
@@ -12,14 +14,73 @@ using SuperHeroAPI_DotNet6.Services.Implementations;
 using SuperHeroAPI_DotNet6.Services.Interfaces;
 using SuperHeroAPI_DotNet6.Validators;
 using System;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // ==================== SERVICE REGISTRATION (ALL BEFORE Build!) ====================
 
+// 1. Controllers
 // Add controllers and configure validation error response
 // First: Add controllers (required for Web API)
 builder.Services.AddControllers();
+
+// 2. Authentication (JWT)
+// Configure JWT
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidIssuer = builder.Configuration["AppSettings:Issuer"],
+            ValidateAudience = true,
+            ValidAudience = builder.Configuration["AppSettings:Audience"],
+            ValidateLifetime = true,
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(builder.Configuration["AppSettings:Token"]!)),
+            ValidateIssuerSigningKey = true,
+        };
+    });
+
+// 3. Authorization
+builder.Services.AddAuthorization();
+
+// 4. Swagger 
+// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddEndpointsApiExplorer();
+// Add Security Definition
+builder.Services.AddSwaggerGen(options =>
+{
+    options.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Type = Microsoft.OpenApi.Models.SecuritySchemeType.Http,
+        Scheme = "Bearer",
+        BearerFormat = "JWT",
+        In = Microsoft.OpenApi.Models.ParameterLocation.Header,
+        Description = "Enter JWT like this: Bearer {your token}"
+    });
+
+    options.AddSecurityRequirement(new Microsoft.OpenApi.Models.OpenApiSecurityRequirement
+    {
+        {
+            new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+            {
+                Reference = new Microsoft.OpenApi.Models.OpenApiReference
+                {
+                    Type = Microsoft.OpenApi.Models.ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            Array.Empty<string>()
+        }
+    });
+});
+
+// 5. FluentValidation
+builder.Services.AddValidatorsFromAssemblyContaining<CreateUserRequestValidator>();
+
 
 // Second: Customize validation error response (optional but recommended)
 builder.Services.Configure<ApiBehaviorOptions>(options =>
@@ -47,20 +108,14 @@ builder.Services.Configure<ApiBehaviorOptions>(options =>
     };
 });
 
-// Swagger
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
 
-
-// FluentValidatoin
-builder.Services.AddValidatorsFromAssemblyContaining<CreateUserRequestValidator>();
-
-// Database
+// 6. Database
 builder.Services.AddDbContext<DataContext>(options =>
 {
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
+
+// 7. Dependency Injection
 
 // DI Jwt
 builder.Services.AddScoped<JwtService>();
@@ -78,7 +133,7 @@ builder.Services.AddScoped<IRoleRepository, RoleRepository>();
 builder.Services.AddScoped<IAuthRepository, AuthRepository>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 
-// AutoMapper
+// 8. AutoMapper
 builder.Services.AddAutoMapper(typeof(Program));
 
 // ==================== BUILD THE APP ====================
@@ -98,6 +153,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 

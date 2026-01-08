@@ -30,7 +30,7 @@ namespace SuperHeroAPI_DotNet6.Controllers
                 ));
         }
 
-        [HttpPost]
+        [HttpPost("login")]
         public async Task<ActionResult<ApiResponse<AuthDTO>>> Login(AuthRequest authRequest)
         {
             return Ok(new ApiResponse<AuthDTO>
