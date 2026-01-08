@@ -1,5 +1,6 @@
 using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -40,6 +41,50 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             IssuerSigningKey = new SymmetricSecurityKey(
                 Encoding.UTF8.GetBytes(builder.Configuration["AppSettings:Token"]!)),
             ValidateIssuerSigningKey = true,
+        };
+
+        // ?? BOTH 401 and 403 HANDLED HERE
+        options.Events = new JwtBearerEvents
+        {
+            // 401 – unauthenticated / invalid token
+            OnChallenge = context =>
+            {
+                context.HandleResponse();
+
+                var response = new ApiErrorResponse
+                {
+                    Status = StatusCodes.Status401Unauthorized,
+                    Type = "Unauthorized",
+                    Title = "Authentication failed",
+                    Message = "You must be authenticated to access this resource.",
+                    Errors = null,
+                    Path = context.HttpContext.Request.Path
+                };
+
+                context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                context.Response.ContentType = "application/json";
+
+                return context.Response.WriteAsJsonAsync(response);
+            },
+
+            // 403 – authenticated but forbidden
+            OnForbidden = context =>
+            {
+                var response = new ApiErrorResponse
+                {
+                    Status = StatusCodes.Status403Forbidden,
+                    Type = "Forbidden",
+                    Title = "Access denied",
+                    Message = "You do not have permission to access this resource.",
+                    Errors = null,
+                    Path = context.HttpContext.Request.Path
+                };
+
+                context.Response.StatusCode = StatusCodes.Status403Forbidden;
+                context.Response.ContentType = "application/json";
+
+                return context.Response.WriteAsJsonAsync(response);
+            }
         };
     });
 
